@@ -1,0 +1,14 @@
+# Ignore IDE specific files
+.idea/
+.vscode/
+
+# Ignore Dart/Flutter build artifacts and caches
+.dart_tool/
+.pub-cache/
+
+# Ignore compiled executables
+*Executable*
+build/
+
+# Ignore the environment file (security best practice)
+.env

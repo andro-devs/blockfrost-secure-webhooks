@@ -1,0 +1,27 @@
+name: blockfrost_secure_webhooks
+description: A dart server application to validate the incoming blockfrost webhooks.
+version: 1.0.0
+# repository: https://github.com/andro-devs/blockfrost_secure_webhooks
+
+# -------- REMOVE THIS LINE IF YOU WANT TO PUBLISH TO PUB.DEV --------
+publish_to: none
+# -----------------------------
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+# Add regular dependencies here.
+dependencies:
+  path: ^1.8.0
+  shelf: ^1.4.1
+  shelf_router: ^1.1.4
+  crypto: ^3.0.3
+  blockfrost_api:
+    git:
+      url: https://github.com/andro-devs/blockfrost-dart.git
+      ref: feature/blockfrost_secure_webhooks
+
+dev_dependencies:
+  lints: ^5.0.0
+  test: ^1.24.0
+  mocktail: ^1.0.0
