@@ -1,27 +1,27 @@
-# Inspiration
+### Inspiration
 
 https://blockfrost.dev/start-building/webhooks/webhooks-signatures#using-sdk
 https://github.com/blockfrost/blockfrost.dev/issues?q=is%3Aopen+is%3Aissue+label%3ABounty%21
 https://github.com/blockfrost/blockfrost.dev/issues/8
 https://github.com/blockfrost/blockfrost-js/blob/master/src/utils/helpers.ts
 
-# Generate a valid signature for env variable BLOCKFROST_TOKEN='WEBHOOK-AUTH-TOKEN'
+### Generate a valid signature for env variable BLOCKFROST_TOKEN='WEBHOOK-AUTH-TOKEN'
 ```
 dart run bin/generate_test_signature.dart
 ```
 
-# Run server on 8080
+### Run server on 8080
 ```
 BLOCKFROST_TOKEN='WEBHOOK-AUTH-TOKEN' dart run bin/server.dart
 ```
 
-# Status endpoint (GET)
+### Status Endpoint (GET)
 ```
 curl -X GET http://localhost:8080/status
 ```
 
-# Webhook endpoint (POST)
-## Note: generate the header value (t=,v1=) by using "dart run bin/generate_test_signature.dart"
+### Webhook Endpoint (POST)
+#### Note: generate the header value (t=,v1=) by using "dart run bin/generate_test_signature.dart"
 ```
 curl --location 'http://localhost:8080/webhook' \
 --header 'blockfrost-signature: YOUR_GENERATED_SIGNATE' \
@@ -29,30 +29,32 @@ curl --location 'http://localhost:8080/webhook' \
 --data '{"event":"test_event","id":1001}'
 ```
 
-# Hosting
-### Install Google Cloud SDK with brew on MacOS
+### Hosting
+#### Install Google Cloud SDK with brew on MacOS
 ```
 brew install --cask google-cloud-sdk
 ```
 
-### Authenticate Your User Account
+#### Authenticate Your User Account
 ```
 gcloud auth login
 ```
 
-### Set current project id (not the project number), e.g. blockfrost-webhook
+#### Set Current Project Id
 ```
+# Example: blockfrost-webhook
+
 gcloud config set project [YOUR_PROJECT_ID]
 e.g.: gcloud config set project blockfrost-webhook
 ```
 
-### Verify auth and config settings
+#### Verify Auth and Config Settings
 ```
 gcloud auth list
 gcloud config list
 ```
 
-# Build docker image
+### Build Docker Image
 ```
 # This command builds the image locally and tags it for pushing to Google's registry (GCR).
 # Important: Attach the "--platform linux/amd64" if built on arm (MacOS) architecture!
@@ -66,7 +68,7 @@ us-central1-docker.pkg.dev/blockfrost-webhook/dart-webhooks/blockfrost-secure-we
 rm -rf .dart_tool
 ```
 
-### Start docker container on your local machine
+### Start Docker Container
 ```
 docker run -d \
 -p 8080:8080 \
@@ -75,20 +77,20 @@ docker run -d \
 us-central1-docker.pkg.dev/blockfrost-webhook/dart-webhooks/blockfrost-secure-webhook:latest
 ```
 
-### Check docker container log file
+### Check Docker Container Log File
 ```
 docker logs blockfrost-secure-webhook-test
 ```
 
-# ------------------------ Cloud deployment --------------------------------------------------------
+### Cloud Deployment
 
-### Enable the Artifact Registry API (if not already enabled):
+#### Enable the Artifact Registry API (if not already enabled):
 
 ```
 gcloud services enable artifactregistry.googleapis.com
 ```
 
-### Create a Repository: We'll create a repository in the same region we plan to deploy (e.g., us-central1).
+#### Create an Artifacts Repository
 
 ```
 gcloud artifacts repositories create dart-webhooks \
@@ -98,13 +100,13 @@ gcloud artifacts repositories create dart-webhooks \
 --description="Docker images for Blockfrost secure webhooks"
 ```
 
-### Configure Docker for Artifact Registry
+#### Configure Docker for Artifact Registry
  This command tells Docker how to authenticate with the new Artifact Registry service.
 ```
 gcloud auth configure-docker us-central1-docker.pkg.dev
 ```
 
-### Provide permission to the user to write the Artifact Registry
+#### Provide permission to the user to write the Artifact Registry
 ```
 Open the Google Cloud Console.
 Navigate to IAM & Admin > IAM.
@@ -115,15 +117,14 @@ Artifact Registry Writer (If you only want permission to push images).
 Click Save.
 ```
 
-### Push the image to Google Container Registry (GCR):
+#### Push the image to Google Container Registry (GCR):
  This uploads the image so Cloud Run can access it.
 ```
 docker push us-central1-docker.pkg.dev/blockfrost-webhook/dart-webhooks/blockfrost-secure-webhook:
 latest
 ```
 
-# Deploy to Google Cloud Run
-### Deploy the service:
+#### Deploy the service to Cloud Run
  Choose a region close to you or your users (e.g., us-central1).
  Note: replace the 'WEBHOOK-AUTH-TOKEN' with the auth-token from blockfrost webhook settings page
 
@@ -139,13 +140,13 @@ latest \
 --project blockfrost-webhook
 ```
 
-### Output the service URL
+#### Output the service URL
 ```
 # Example:
 Service URL: https://blockfrost-webhook-123456789.us-central1.run.app/webhook
 ```
 
-### TODO: how to create a github pipeline to push the image to google artifact registry?
+#### TODO: how to create a github pipeline to push the image to google artifact registry?
 see this URL:
 https://stackoverflow.com/questions/75840164/permission-artifactregistry-repositories-uploadartifacts-denied-on-resource-usin
 i probably need a service account which creds stored in github actions secrets
