@@ -6,6 +6,9 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_router/shelf_router.dart';
 
+// You will find your webhook secret auth token in your webhook settings in the Blockfrost Dashboard
+// Pass it as environment variable when starting the server:
+// BLOCKFROST_TOKEN='WEBHOOK-AUTH-TOKEN' dart run bin/server.dart
 const String secretAuthEnvToken = 'BLOCKFROST_TOKEN';
 const int port = 8080;
 

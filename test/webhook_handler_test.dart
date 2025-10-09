@@ -26,7 +26,8 @@ final mockValidator = MockWebhookValidator();
 
 void main() {
   const testSecret = 'TEST_SECRET';
-  const testPayload = '{"event":"test_event", "data": "content"}';
+  const testPayload =
+      '{"id": "4aa83a06-5c9f-40af-90e4-d860189c0f05", "type": "block", "payload": {"hash": "ab25cc6299eafc06e0545bdd20faa56b45e8e4dc71f6ffbf5f39a5962f5d90bb"}}';
   const validSignatureHeader = 't=foo,v1=bar';
 
   // Define the common stubbing logic

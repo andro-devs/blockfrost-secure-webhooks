@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer' as developer;
 
 import 'package:blockfrost_api/blockfrost_api.dart';
 import 'package:shelf/shelf.dart';
 
-/// Request handler that handles the webhook logic
+/// Request handler which handles the incoming webhook
 Future<Response> handleWebhook(
     {required Request request,
     required String secretToken,
@@ -39,17 +38,45 @@ Future<Response> handleWebhook(
     return Response(400, body: 'Signature validation failed!');
   }
 
-  // Payload parsing JSON
+  // Parsing requestPayload JSON
   try {
     Map<String, dynamic> data =
         jsonDecode(requestPayload) as Map<String, dynamic>;
-    developer.log('Payload keys received: ${data.keys}');
+    final String? type = data['type'] as String?;
+    final dynamic payload = data['payload'];
+
+    if (type == null || payload == null) {
+      throw Exception("Error: Payload or type is missing.");
+    }
+
+    // Process the incoming event
+    switch (type) {
+      case "transaction":
+        final List<dynamic> transactions = payload as List<dynamic>;
+        print("Received ${transactions.length} transactions");
+        for (final transaction in transactions) {
+          final Map<String, dynamic> txData =
+              transaction as Map<String, dynamic>;
+          final String? txHash =
+              (txData['tx'] as Map<String, dynamic>?)?['hash'] as String?;
+          print("Transaction $txHash");
+        }
+        break;
+      case "block":
+        final Map<String, dynamic> blockData = payload as Map<String, dynamic>;
+        final String? blockHash = blockData['hash'] as String?;
+        print("Received block hash $blockHash");
+        break;
+      // ...other types (delegation, epoch)
+      default:
+        throw Exception("Unexpected type $type");
+    }
+    // Signature is valid
     return Response.ok(
       jsonEncode({'status': 'Webhook received successfully ✅'}),
       headers: {'content-type': 'application/json'},
     );
   } catch (e) {
-    developer.log('Internal Server Error: Could not decode validated JSON.');
     return Response.internalServerError(body: 'Failed to process JSON.');
   }
 }
