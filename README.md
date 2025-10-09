@@ -1,6 +1,6 @@
 ## blockfrost-secure-webhooks
 
-[![Dart Unit Tests](https://github.com/andro-devs/blockfrost-secure-webhooks/actions/workflows/dart.yml/badge.svg)](https://github.com/andro-devs/blockfrost-secure-webhooks/actions/workflows/dart.yml/badge.svg) [![GitHub license](https://img.shields.io/github/license/andro-devs/blockfrost-secure-webhooks)](https://github.com/andro-devs/blockfrost-secure-webhooks/blob/main/LICENSE)
+[![Dart Unit Tests](https://github.com/andro-devs/blockfrost-secure-webhooks/actions/workflows/dart.yml/badge.svg)](https://github.com/andro-devs/blockfrost-secure-webhooks/actions/workflows/dart.yml/badge.svg)  [![GitHub license](https://img.shields.io/github/license/andro-devs/blockfrost-secure-webhooks)](https://github.com/andro-devs/blockfrost-secure-webhooks/blob/main/LICENSE)
 
 ##### @formatter:off
 
