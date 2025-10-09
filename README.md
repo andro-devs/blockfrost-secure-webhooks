@@ -59,9 +59,7 @@ gcloud config list
 # This command builds the image locally and tags it for pushing to Google's registry (GCR).
 # Important: Attach the "--platform linux/amd64" if built on arm (MacOS) architecture!
 
-docker build --platform linux/amd64 -t
-us-central1-docker.pkg.dev/blockfrost-webhook/dart-webhooks/blockfrost-secure-webhook:latest .
---no-cache
+docker build --platform linux/amd64 -t us-central1-docker.pkg.dev/blockfrost-webhook/dart-webhooks/blockfrost-secure-webhook:latest . --no-cache
 
 ### Note: if error comes up clean the dart tool and run docker build again
 # Delete the local configuration cache
@@ -80,6 +78,16 @@ us-central1-docker.pkg.dev/blockfrost-webhook/dart-webhooks/blockfrost-secure-we
 ### Check Docker Container Log File
 ```
 docker logs blockfrost-secure-webhook-test
+```
+
+### Test call to Docker Container
+ Generate the signature using the generate_test_signature.dart and paste it into the header
+```
+curl --location 'http://localhost:8080/webhook' \
+--header 'blockfrost-signature:
+ADD_SIGNATURE_HERE' \
+--header 'Content-Type: application/json' \
+--data '{"event":"test_event","id":1001}'
 ```
 
 ### Cloud Deployment
