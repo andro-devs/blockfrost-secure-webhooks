@@ -1,10 +1,5 @@
 # @formatter:off
 
-### Generate a valid signature for env variable BLOCKFROST_TOKEN='WEBHOOK-AUTH-TOKEN'
-```
-dart run bin/generate_test_signature.dart
-```
-
 ### Run server on 8080
 ```
 BLOCKFROST_TOKEN='WEBHOOK-AUTH-TOKEN' dart run bin/server.dart
@@ -27,7 +22,7 @@ curl --location 'http://localhost:8080/webhook' \
 ### Build Docker Image
 ```
 # This command builds the image locally and tags it for pushing to Google's registry (GCR).
-# Important: Attach the "--platform linux/amd64" if built on arm (MacOS) architecture!
+# Important: Attach the "--platform linux/amd64" when you built it on arm (MacOS) architecture!
 
 docker build --platform linux/amd64 -t us-central1-docker.pkg.dev/blockfrost-webhook/dart-webhooks/blockfrost-secure-webhook:latest . --no-cache
 
@@ -143,5 +138,5 @@ gcloud run deploy blockfrost-webhook \
 #### Output the service URL
 ```
 # Example:
-Service URL: https://blockfrost-webhook-123456789.us-central1.run.app/webhook
+Service URL: https://blockfrost-webhook-PROJECT_NUMBER.us-central1.run.app/webhook
 ```
