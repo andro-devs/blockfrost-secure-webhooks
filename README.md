@@ -135,7 +135,7 @@ gcloud run deploy blockfrost-webhook \
 --region us-central1 \
 --allow-unauthenticated \
 --port 8080 \
---set-env-vars BLOCKFROST_TOKEN='56b2d3af-aaf0-433b-a8f5-ebb031402c2f' \
+--set-env-vars BLOCKFROST_TOKEN='WEBHOOK-AUTH-TOKEN' \
 --project blockfrost-webhook
 ```
 

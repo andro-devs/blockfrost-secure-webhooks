@@ -1,36 +1,39 @@
-name: Dart
+name: Dart Validate Workflow
 
 on:
+  # Triggers on every 'git push' to any branch.
   push:
-    branches: [ "main", "develop" ]
-  pull_request:
-    branches: [ "main" ]
 
+  # Triggers on all Pull Requests targeting any branch.
+  pull_request:
 jobs:
-  build:
+  # The name of the job
+  validate:
+    # Set the runner environment (standard choice for Dart/Flutter)
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      # Note: This workflow uses the latest stable version of the Dart SDK.
-      # You can specify other versions if desired, see documentation here:
-      # https://github.com/dart-lang/setup-dart/blob/main/README.md
-      - uses: dart-lang/setup-dart@v1
+      # Checkout the code
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Install dependencies
+      # Set up the Dart environment
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1
+
+      # Fetch dependencies (important for deployment/build)
+      - name: Get dependencies
         run: dart pub get
 
-      # Uncomment this step to verify the use of 'dart format' on each commit.
-      # - name: Verify formatting
-      #   run: dart format --output=none --set-exit-if-changed .
+      # Verify the use of 'dart format' on each commit.
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
 
       # Consider passing '--fatal-infos' for slightly stricter analysis.
-      #- name: Analyze project source
-      #  run: dart analyze
+      - name: Analyze project source
+        run: dart analyze
 
-      # Your project will need to have tests in test/ and a dependency on
-      # package:test for this step to succeed. Note that Flutter projects will
-      # want to change this to 'flutter test'.
+      # Run tests
       - name: Run tests
         run: dart test
 
