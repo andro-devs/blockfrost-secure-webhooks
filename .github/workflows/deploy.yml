@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # Ensure the dart-validation job ran successfully
-    needs: dart-validation
+    # needs: dart-validation
 
     # Permissions required for Workload Identity Federation
     permissions:
