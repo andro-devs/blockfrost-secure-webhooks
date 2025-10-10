@@ -1,4 +1,4 @@
-name: Dart Validate Workflow
+name: Validate Workflow
 
 on:
   # Triggers on every 'git push' to any branch.
