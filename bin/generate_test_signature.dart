@@ -8,7 +8,8 @@ void main() {
   // current timestamp
   final testTs = DateTime.now().millisecondsSinceEpoch ~/ 1000;
   // The exact JSON payload string you will use in your curl command
-  const String testPayloadString = '{"type": "block", "payload": {"hash": "0a26dd2b2c2cd32e66029215d22cd9f1572e41bd6549c75cf2479fb9b771487a"}}';
+  const String testPayloadString =
+      '{"type": "block", "payload": {"hash": "0a26dd2b2c2cd32e66029215d22cd9f1572e41bd6549c75cf2479fb9b771487a"}}';
 
   // 1. Prepare the signature_payload (timestamp.payload)
   final signaturePayload = '$testTs.$testPayloadString';
