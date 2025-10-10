@@ -16,3 +16,6 @@ doc/api/
 
 ## Mac
 .DS_Store
+
+## Code coverage
+/coverage/

@@ -11,7 +11,7 @@ class MockRequest extends Mock implements Request {}
 
 Request createMockRequest({
   Map<String, String> headers = const {},
-  String body = '{}',
+  String body = '',
 }) {
   final mockRequest = MockRequest();
   when(() => mockRequest.headers).thenReturn(headers);
@@ -37,6 +37,8 @@ void main() {
 
   final testBodyTx = fixture("test/fixtures/webhook_type_tx.json");
   final testBodyBlock = fixture("test/fixtures/webhook_type_block.json");
+  final testInvalidType = fixture("test/fixtures/webhook_type_invalid.json");
+  final testInvalidTypeAndPayload = fixture("test/fixtures/webhook_invalid_type_and_payload.json");
 
   // Define the common stubbing logic
   void stubValidatorToReturn(bool value) {
@@ -73,7 +75,7 @@ void main() {
     // --- Test Case 2: Validation Failure ---
     test('Should return 400 when validation fails (Rejection scenario)',
         () async {
-      // Override the default TRUE stub with a FALSE stub just for this test
+      // STUB: Inject a validator that ALWAYS returns FALSE (simulates invalid signature)
       stubValidatorToReturn(false);
 
       final request = createMockRequest(
@@ -81,7 +83,6 @@ void main() {
         headers: {'blockfrost-signature': validSignatureHeader},
       );
 
-      // STUB: Inject a validator that ALWAYS returns FALSE (simulates invalid signature)
       final response = await handleWebhook(
           request: request, secretToken: testSecret, validator: mockValidator);
       expect(response.statusCode, 400);
@@ -95,7 +96,21 @@ void main() {
           )).called(1);
     });
 
-    // --- Test Case 3: Successful Reception of an transaction webhook ---
+    // --- Test Case 3: Empty payload ---
+    test('Should return 400 if the payload is empty', () async {
+      // STUB: Inject a validator that ALWAYS returns TRUE (simulates valid signature)
+      stubValidatorToReturn(true);
+      final request = createMockRequest(
+        headers: {'blockfrost-signature': validSignatureHeader},
+      );
+      final response = await handleWebhook(
+          request: request, secretToken: testSecret, validator: mockValidator);
+      expect(response.statusCode, 400);
+      expect(
+          await response.readAsString(), contains('Empty requestPayload.'));
+    });
+
+    // --- Test Case 4: Successful Reception of an transaction webhook ---
     test('Should return 200 when validation succeeds and type is transaction',
         () async {
       stubValidatorToReturn(
@@ -105,7 +120,6 @@ void main() {
         headers: {'blockfrost-signature': validSignatureHeader},
       );
 
-      // STUB: Inject a validator that ALWAYS returns TRUE (simulates valid signature)
       final response = await handleWebhook(
           request: request, secretToken: testSecret, validator: mockValidator);
       expect(response.statusCode, 200);
@@ -113,17 +127,16 @@ void main() {
           contains('Webhook received successfully'));
     });
 
-    // --- Test Case 4: Successful Reception of an transaction webhook ---
+    // --- Test Case 5: Successful Reception of an transaction webhook ---
     test('Should return 200 when validation succeeds and type is transaction',
         () async {
-      stubValidatorToReturn(
-          true); // or skip stubbing due to default return in setup set to "true"
+      // STUB: Inject a validator that ALWAYS returns TRUE (simulates valid signature)
+      stubValidatorToReturn(true);
       final request = createMockRequest(
         body: testBodyBlock,
         headers: {'blockfrost-signature': validSignatureHeader},
       );
 
-      // STUB: Inject a validator that ALWAYS returns TRUE (simulates valid signature)
       final response = await handleWebhook(
           request: request, secretToken: testSecret, validator: mockValidator);
       expect(response.statusCode, 200);
@@ -131,7 +144,7 @@ void main() {
           contains('Webhook received successfully'));
     });
 
-    // --- Test Case 5: Invalid JSON After Validation ---
+    // --- Test Case 6: Invalid JSON After Validation ---
     test('Should return 500 if the validated payload is not valid JSON',
         () async {
       final request = createMockRequest(
@@ -144,6 +157,36 @@ void main() {
       final response = await handleWebhook(
           request: request, secretToken: testSecret, validator: mockValidator);
       // This tests the `try-catch` block responsible for `jsonDecode`
+      expect(response.statusCode, 500);
+      expect(
+          await response.readAsString(), contains('Failed to process JSON.'));
+    });
+
+    // --- Test Case 7: Invalid webhook type ---
+    test('Should return 500 type is invalid', () async {
+      // STUB: Inject a validator that ALWAYS returns TRUE (simulates valid signature)
+      stubValidatorToReturn(true);
+      final request = createMockRequest(
+        body: testInvalidType,
+        headers: {'blockfrost-signature': validSignatureHeader},
+      );
+      final response = await handleWebhook(
+          request: request, secretToken: testSecret, validator: mockValidator);
+      expect(response.statusCode, 500);
+      expect(
+          await response.readAsString(), contains('Failed to process JSON.'));
+    });
+
+    // --- Test Case 8: Invalid webhook content ---
+    test('Should return 500 webhook content is invalid', () async {
+      // STUB: Inject a validator that ALWAYS returns TRUE (simulates valid signature)
+      stubValidatorToReturn(true);
+      final request = createMockRequest(
+        body: testInvalidTypeAndPayload,
+        headers: {'blockfrost-signature': validSignatureHeader},
+      );
+      final response = await handleWebhook(
+          request: request, secretToken: testSecret, validator: mockValidator);
       expect(response.statusCode, 500);
       expect(
           await response.readAsString(), contains('Failed to process JSON.'));
