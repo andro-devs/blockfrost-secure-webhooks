@@ -1,4 +1,4 @@
-name: Deploy to Cloud (or Production)
+name: Deploy Workflow
 
 # Trigger
 on:
@@ -10,8 +10,6 @@ on:
 
 # Define common variables
 env:
-  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  PROJECT_NUM: ${{ secrets.GCP_PROJECT_NUM }}
   SERVICE_NAME: blockfrost-webhook
   REGION: us-central1
   IMAGE_NAME: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/dart-webhooks/blockfrost-secure-webhook:latest
@@ -35,14 +33,6 @@ jobs:
       # Checkout the code
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      # --- DEBUG STEP ADDED HERE ---
-      - name: Debug Environment Variables
-        run: |
-          echo "GCP Project ID (Human Readable): $PROJECT_ID"
-          echo "GCP Project Number (WIF Auth): $PROJECT_NUM"
-          echo "Image Name: $IMAGE_NAME" # Ensure IMAGE_NAME is defined in the top env block
-      # -----------------------------
 
       # --- 1. Authenticate with Google Cloud (using WIF) ---
       - id: 'auth'
