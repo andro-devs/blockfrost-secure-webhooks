@@ -36,6 +36,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # --- DEBUG STEP ADDED HERE ---
+      - name: Debug Environment Variables
+        run: |
+          echo "GCP Project ID (Human Readable): $PROJECT_ID"
+          echo "GCP Project Number (WIF Auth): $PROJECT_NUM"
+          echo "Image Name: $IMAGE_NAME" # Ensure IMAGE_NAME is defined in the top env block
+      # -----------------------------
+
       # --- 1. Authenticate with Google Cloud (using WIF) ---
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
