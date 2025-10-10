@@ -2,7 +2,7 @@ name: Dart
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "develop" ]
   pull_request:
     branches: [ "main" ]
 
@@ -33,3 +33,33 @@ jobs:
       # want to change this to 'flutter test'.
       - name: Run tests
         run: dart test
+
+      # --- START COVERAGE GENERATION ---
+      # 1. Run Tests and collect raw coverage data
+      - name: Collect Raw Coverage
+        run: |
+          mkdir -p coverage/raw
+          dart test --coverage=coverage/raw
+
+      # 2. Format the raw data into LCOV
+      - name: Format to LCOV
+        # Use dart run coverage:format_coverage to convert raw JSON to lcov.info
+        run: |
+          LCOV_OUTPUT_PATH=coverage/lcov.info 
+          
+          dart run coverage:format_coverage \
+            --lcov \
+            --in=coverage/raw \
+            --out=$LCOV_OUTPUT_PATH \
+            --packages=.dart_tool/package_config.json \
+            --report-on=lib
+
+      # 3. Upload LCOV file to Codecov
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: coverage/lcov.info
+          # Note: Token is often optional for public repos, but required for private
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+          verbose: true
