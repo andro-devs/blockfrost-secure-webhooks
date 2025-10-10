@@ -18,9 +18,9 @@ curl -X GET http://localhost:8080/status
 #### Note: generate the header value (t=,v1=) by using "dart run bin/generate_test_signature.dart"
 ```
 curl --location 'http://localhost:8080/webhook' \
---header 'blockfrost-signature: YOUR_GENERATED_SIGNATE' \
+--header 'blockfrost-signature: YOUR_GENERATED_SIGNATURE' \
 --header 'Content-Type: application/json' \
---data '{"event":"test_event","id":1001}'
+--data '{"type": "block", "payload": {"hash": "0a26dd2b2c2cd32e66029215d22cd9f1572e41bd6549c75cf2479fb9b771487a"}}'
 ```
 
 ### Build Docker Image
@@ -46,7 +46,7 @@ us-central1-docker.pkg.dev/blockfrost-webhook/dart-webhooks/blockfrost-secure-we
 
 ### Check Docker Container Log File
 ```
-docker logs blockfrost-secure-webhook-test
+docker logs -f blockfrost-secure-webhook-test
 ```
 
 ### Test call to Docker Container
@@ -56,7 +56,7 @@ curl --location 'http://localhost:8080/webhook' \
 --header 'blockfrost-signature:
 ADD_SIGNATURE_HERE' \
 --header 'Content-Type: application/json' \
---data '{"event":"test_event","id":1001}'
+--data '{"type": "block", "payload": {"hash": "0a26dd2b2c2cd32e66029215d22cd9f1572e41bd6549c75cf2479fb9b771487a"}}'
 ```
 
 ### Cloud Deployment
@@ -135,7 +135,7 @@ gcloud run deploy blockfrost-webhook \
 --region us-central1 \
 --allow-unauthenticated \
 --port 8080 \
---set-env-vars BLOCKFROST_TOKEN='WEBHOOK-AUTH-TOKEN' \
+--set-env-vars BLOCKFROST_TOKEN='56b2d3af-aaf0-433b-a8f5-ebb031402c2f' \
 --project blockfrost-webhook
 ```
 

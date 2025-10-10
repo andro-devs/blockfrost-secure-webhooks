@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:blockfrost_api/blockfrost_api.dart';
-import 'package:blockfrost_secure_webhooks/webhook_handler.dart';
+import 'package:blockfrost_secure_webhooks/src/impl/blockfrost_webhook_handler.dart';
+import 'package:blockfrost_secure_webhooks/src/impl/blockfrost_webhook_processor.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_router/shelf_router.dart';
@@ -20,15 +21,18 @@ void main() async {
     exit(1); // Exit if secret is not set
   }
 
+  final BlockfrostWebhookHandler webhookHandler = BlockfrostWebhookHandler();
+
   // path mapping with router configuration
   final router = Router()
     ..post(
         '/webhook',
-        (Request request) => handleWebhook(
+        (Request request) => webhookHandler.handleWebhook(
             request: request,
             secretToken: secretToken,
-            validator:
-                BlockfrostSignatureValidator())) // Map POST requests to /webhook
+            validator: BlockfrostSignatureValidator(),
+            processor:
+                BlockfrostWebhookProcessor())) // Map POST requests to /webhook
     ..get('/status', (_) => Response.ok('ok')); // Simple test route
 
   // Configure middleware (optional, but good practice for logging)
