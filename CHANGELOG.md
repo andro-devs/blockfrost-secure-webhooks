@@ -1,3 +1,7 @@
+## 4.0.0
+
+- Add SignatureValidationException
+
 ## 3.0.0
 
 - Deploy to Google Cloud workflow

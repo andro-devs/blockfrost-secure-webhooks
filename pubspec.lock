@@ -38,7 +38,7 @@ packages:
     description:
       path: "."
       ref: "feature/blockfrost_secure_webhooks"
-      resolved-ref: d0af10d45c0158656da5798ee4d7e5cc26254ada
+      resolved-ref: eb1f853fbd56ea4f67bff2e47f3f48d911c8f7a9
       url: "https://github.com/andro-devs/blockfrost-dart.git"
     source: git
     version: "1.0.0"

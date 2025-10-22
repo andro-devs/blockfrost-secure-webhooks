@@ -28,13 +28,21 @@ class BlockfrostWebhookHandler implements WebhookHandler {
     }
 
     // Validate signature
-    if (!validator.validate(
-      signatureHeader: signatureHeader,
-      requestPayload: requestPayload,
-      secretAuthToken: secretToken,
-    )) {
-      return Response(400, body: 'Signature validation failed!');
+    try {
+      validator.validate(
+          requestPayload: requestPayload,
+          signatureHeader: signatureHeader,
+          secretAuthToken: secretToken);
+    } on SignatureValidationException catch (e) {
+      return Response(
+        400,
+        // Or whatever single status code you prefer for all validation failures
+        body: 'Signature validation failed! ${e.toString()}',
+      );
+    } catch (e) {
+      return Response.internalServerError(body: 'Signature validation failed!');
     }
+
     // Process payload
     try {
       processor.process(requestPayload);
